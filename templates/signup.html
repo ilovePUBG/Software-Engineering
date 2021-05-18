@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SIGNUP</title>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='signup.css')}}"
+    />
+    <link
+      href="https://fonts.googleapis.com/earlyaccess/notosanskr.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="signup-form">
+      <form action="/login" method="POST">
+        <input type="text" name="id" class="text-field" placeholder="아이디" />
+        <input
+          type="password"
+          name="password"
+          class="text-field"
+          placeholder="비밀번호"
+        />
+        <input
+          type="password"
+          name="password_retype"
+          class="text-field"
+          placeholder="비밀번호 확인"
+        />
+        <input type="submit" value="회원가입" class="submit-btn" />
+      </form>
+    </div>
+  </body>
+</html>
