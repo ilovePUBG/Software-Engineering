@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>LOGIN</title>
+    <title>INDEX</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="{{url_for('static', filename='login.css')}}" />
+    <link rel="stylesheet" href="{{url_for('static', filename='index.css')}}" />
     <link
-      href="https://fonts.googleapis.com/earlyaccess/notosanskr.css"
       rel="stylesheet"
+      href="{{url_for('static', filename='styles.css')}}"
     />
   </head>
   <body>
-    <a href="/login">
-      <input type="button" value="login" />
-    </a>
-    <a href="/signup">
-      <input type="button" value="signup" />
-    </a>
+    <h1>My Diary</h1>
+    <div class="choose">
+      <a href="/login">
+        <div class="choose--box">
+          <span>Log in</span>
+        </div>
+      </a>
+      <a href="/signup">
+        <div class="choose--box">
+          <span> Sign up </span>
+        </div>
+      </a>
+    </div>
   </body>
 </html>

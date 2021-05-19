@@ -5,26 +5,34 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="{{url_for('static', filename='login.css')}}" />
     <link
-      href="https://fonts.googleapis.com/earlyaccess/notosanskr.css"
       rel="stylesheet"
+      href="{{url_for('static', filename='styles.css')}}"
     />
   </head>
   <body>
+    <h1>My Diary</h1>
     <div class="login-form">
       <form action="/main" method="POST">
-        <input type="text" name="id" class="text-field" placeholder="아이디" />
-        <input
-          type="password"
-          name="password"
-          class="text-field"
-          placeholder="비밀번호"
-        />
-        <input type="submit" value="로그인" class="submit-btn" />
+        <span>
+          <i class="far fa-address-card fa-4x"></i>
+          <input type="text" name="id" class="text-field" placeholder="Id" />
+        </span>
+        <span>
+          <i class="fas fa-key fa-4x"></i>
+          <input
+            type="password"
+            name="password"
+            class="text-field"
+            placeholder="Password"
+          />
+        </span>
+        <input type="submit" value="Log In" class="submit-btn" />
       </form>
-
-      <div class="links">
-        <a href="#">비밀번호를 잊어버리셨나요?</a>
-      </div>
     </div>
+
+    <script
+      src="https://kit.fontawesome.com/b98b5bbdbb.js"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

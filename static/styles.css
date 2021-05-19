@@ -1,0 +1,12 @@
+h1 {
+  font-size: 100px;
+  margin-top: 10px;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: inherit;
+}

@@ -1,0 +1,20 @@
+.choose {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 50vh;
+}
+
+.choose--box {
+  width: 300px;
+  height: 300px;
+  border: 1px dashed black;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+span {
+  font-size: 50px;
+}
