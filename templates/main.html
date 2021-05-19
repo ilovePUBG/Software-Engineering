@@ -11,5 +11,11 @@
   </head>
   <body>
     <h2>THIS IS MAIN PAGE</h2>
+
+    {% for member in members_list %}
+    <h4>
+      {{member.id}} {{member.email}} {{member.password}} {{member.date_created}}
+    </h4>
+    {% endfor %}
   </body>
 </html>
