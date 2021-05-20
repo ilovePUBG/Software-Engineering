@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from sqlalchemy.orm import backref
@@ -17,18 +17,16 @@ class User(db.Model):
     __table_name__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(200), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
 
-    def __init__(self, username, email, password, **kwargs):
-        self.username = username
+    def __init__(self, email, password, **kwargs):
         self.email = email
         self.set_password(password)
 
     def __repr__(self):
-        return f"<User('{self.id}', '{self.username}', '{self.email}')>"
+        return f"<User('{self.id}', '{self.email}')>"
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -49,56 +47,56 @@ class Post(db.Model):
     def __repr__(self):
         return f"<Post('{self.id}', '{self.title}')>"
 
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    return render_template('index.html')
-
+    return render_template("index.html")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-
-    else:
+    if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        
+        resp = User.query.filter((User.email == email)).all()
 
-        try:
-            data = User.query.filter_by(email=email).first()
-            if data is None:
-                pass
-            elif data.check_password(password):
-                session['logged_in'] = True
-                return render_template('home.html', 
-                                        username=data.username, 
-                                        posts=Post.query.filter_by(user_id=data.id).all())
-            else:
-                pass
-        except:
-            pass
+        if len(resp) == 0:
+            new_member = User(email=email, password=password)
 
+            # pusht to db
+            try:
+                db.session.add(new_member)
+                db.session.commit()
+                return redirect('/login')
+            except:
+                return "There was an error"
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'GET':
-        return render_template('signup.html')
-
+        else:
+            return "duplicated member info"
     else:
-        new_user = User(username=request.form['username'],
-                        email=request.form['email'],
-                        password=request.form['password'])
-
-        db.session.add(new_user)
-        db.session.commit()
         return render_template('login.html')
 
-@app.route('/logout')
-def logout():
-    session['logged_in'] = False
-    return redirect(url_for('index'))
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
 
+@app.route('/main', methods=['GET', 'POST'])
+def main():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        resp = None
+
+        # try:
+        #     resp = User.query.filter((User.email == email) and (User.password == password))
+        # except:
+        #     return "no matched account"
+
+    members_list = User.query.order_by(User.date_created)
+    return render_template('main.html', members_list=members_list)
+
+@app.route('/diary')
+def diary():
+    return render_template('diary.html')
 
 if __name__ == '__main__':
-    app.secret_key = '123123123'
     app.run(debug=True)
