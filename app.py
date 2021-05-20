@@ -54,6 +54,15 @@ class Post(db.Model):
 def index():
     return render_template('index.html')
 
+@app.route('/post/<int:id>')
+def post(id):
+    try:
+        data = Post.query.filter_by(id=id).first()
+    except:
+        pass
+    else:
+        return render_template('post.html', content=data.content)
+    
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -66,6 +75,9 @@ def login():
 
         try:
             data = User.query.filter_by(email=email).first()
+        except:
+            pass
+        else:
             if data is None:
                 pass
             elif data.check_password(password):
@@ -75,8 +87,6 @@ def login():
                                         posts=Post.query.filter_by(user_id=data.id).all())
             else:
                 pass
-        except:
-            pass
 
 
 @app.route('/signup', methods=['GET', 'POST'])

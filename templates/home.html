@@ -12,8 +12,19 @@
   <body>
     <h2>THIS IS MAIN PAGE</h2>
     <h3>Welcome! {{ username }}</h3>
-    {% for post in posts%} {{post.title}} {{post.content}}
-    {{post.date_posted}}<br />
-    {% endfor %}
+    <table>
+      <tr>
+        <th>INDEX</th>
+        <th>TITLE</th>
+        <th>DATE POSTED</th>
+      </tr>
+      {% for post in posts %}
+      <tr>
+        <td>{{ loop.index0 }}</td>
+        <td><a href="/post/{{ post.id }}">{{ post.title }}</a></td>
+        <td>{{ post.date_posted }}</td>
+      </tr>
+      {% endfor %}
+    </table>
   </body>
 </html>
