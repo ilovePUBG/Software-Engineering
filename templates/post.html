@@ -3,7 +3,10 @@
   <head>
     <title>MAIN</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}" />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/home.css')}}"
+    />
     <link
       href="https://fonts.googleapis.com/earlyaccess/notosanskr.css"
       rel="stylesheet"
@@ -11,6 +14,10 @@
   </head>
   <body>
     <h2>THIS IS POST PAGE</h2>
-    <article>{{content}}</article>
+    <article>{{ content }}</article>
+
+    {% for file in files %}
+    <img src="{{url_for('static', filename=user.img_path + file)}}" />
+    {% endfor %}
   </body>
 </html>

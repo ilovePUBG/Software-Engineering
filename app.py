@@ -4,6 +4,8 @@ from datetime import datetime
 from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash, check_password_hash
 
+import os
+
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'this is secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -20,15 +22,17 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(200), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    img_path = db.Column(db.String(100), unique=True, nullable=False) # directory path to posted images
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def __init__(self, username, email, password, **kwargs):
         self.username = username
         self.email = email
         self.set_password(password)
+        self.img_path = 'image/' + self.username + '/'
 
     def __repr__(self):
-        return f"<User('{self.id}', '{self.username}', '{self.email}')>"
+        return f"<User('{self.id}', '{self.username}', '{self.email}', '{self.img_path}')>"
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -57,11 +61,13 @@ def index():
 @app.route('/post/<int:id>')
 def post(id):
     try:
-        data = Post.query.filter_by(id=id).first()
+        post = Post.query.filter_by(id=id).first()
+        user = User.query.filter_by(id=post.user_id).first()
     except:
         pass
     else:
-        return render_template('post.html', content=data.content)
+        user_path = 'static/' + user.img_path
+        return render_template('post.html', content=post.content, user=user, files=[file for file in os.listdir(user_path)])
     
 
 @app.route('/login', methods=['GET', 'POST'])
