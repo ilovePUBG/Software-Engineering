@@ -68,6 +68,10 @@ def post(id):
     else:
         user_path = 'static/' + user.img_path
         return render_template('post.html', content=post.content, user=user, files=[file for file in os.listdir(user_path)])
+
+@app.route('/post/new')
+def post_new():
+    return render_template('post.html')
     
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -105,9 +109,16 @@ def signup():
                         email=request.form['email'],
                         password=request.form['password'])
 
-        db.session.add(new_user)
-        db.session.commit()
-        return render_template('login.html')
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+        except:
+            return "You are already our member~"
+        else:
+            if not os.path.exists(new_user.img_path):
+                os.makedirs('static/' + new_user.img_path)
+
+            return render_template('login.html')
 
 @app.route('/logout')
 def logout():
