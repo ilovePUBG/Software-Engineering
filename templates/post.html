@@ -14,7 +14,9 @@
   </head>
   <body>
     <h2>THIS IS POST PAGE</h2>
-    <article>{{ content }}</article>
+    <article>
+      {{ post.title }} {{ post.content }} {{ post.date_posted }}
+    </article>
 
     {% for file in files %}
     <img src="{{url_for('static', filename=user.img_path + file)}}" />

@@ -58,6 +58,16 @@ class Post(db.Model):
 def index():
     return render_template('index.html')
 
+@app.route('/new', methods=['GET', 'POST'])
+def new():
+    if request.method == 'GET': # New diary button from home.html
+        return render_template('new.html') 
+    else: # add another past entry to Post table
+        image = request.files['image']
+
+        new_post = Post(title=request.form['title'],
+                        content=request.form['content'])
+
 @app.route('/post/<int:id>')
 def post(id):
     try:
@@ -67,12 +77,25 @@ def post(id):
         pass
     else:
         user_path = 'static/' + user.img_path
-        return render_template('post.html', content=post.content, user=user, files=[file for file in os.listdir(user_path)])
+        return render_template('post.html', post=post, user=user, files=[file for file in os.listdir(user_path)])
 
-@app.route('/post/new')
-def post_new():
-    return render_template('post.html')
-    
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+    if request.method == 'GET': # Edit already loaded diary
+        try:
+            post = Post.query.filter_by(id=id).first()
+            user = User.query.filter_by(id=post.user_id).first()
+        except:
+            pass
+        else:
+            user_path = 'static/' + user.img_path
+            return render_template('edit.html', post=post, user=user, files=[file for file in os.listdir(user_path)])
+    else: # update post entry after edit task
+        pass
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    pass
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -91,7 +114,7 @@ def login():
             if data is None:
                 pass
             elif data.check_password(password):
-                session['logged_in'] = True
+                session['logged_in'] = data.id #logged_in user's id
                 return render_template('home.html', 
                                         username=data.username, 
                                         posts=Post.query.filter_by(user_id=data.id).all())
@@ -122,7 +145,7 @@ def signup():
 
 @app.route('/logout')
 def logout():
-    session['logged_in'] = False
+    session['logged_in'] = None
     return redirect(url_for('index'))
 
 

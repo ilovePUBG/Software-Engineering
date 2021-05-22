@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MAIN</title>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/home.css')}}"
+    />
+    <link
+      href="https://fonts.googleapis.com/earlyaccess/notosanskr.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <h2>THIS IS EDIT PAGE</h2>
+
+    <form action="/edit/{{post.id}}" method="POST">
+      <input
+        type="text"
+        name="title"
+        value="{{post.title}}"
+        placeholder="write title"
+        required
+      />
+      <input
+        type="text"
+        name="content"
+        value="{{post.content}}"
+        placeholder="write your story"
+      />
+      <input
+        type="file"
+        accept="image/*"
+        id="file"
+        name="image"
+        onchange="loadFile(event)"
+      />
+      <div class="image-display">
+        {% for file in files %}
+        <img src="{{url_for('static', filename=user.img_path + file)}}" />
+        {% endfor %}
+      </div>
+      <!--where selected images displayed-->
+      <input type="submit" value="Save diary" />
+    </form>
+
+    <script
+      type="text/javascript"
+      src="{{url_for('static', filename='js/post.js')}}"
+    ></script>
+  </body>
+</html>

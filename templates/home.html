@@ -16,11 +16,7 @@
     <h2>THIS IS MAIN PAGE</h2>
     <h3>Welcome! {{ username }}</h3>
     <div>
-      <input
-        type="button"
-        onclick="location.href='/post/new'"
-        vlaue="New diary"
-      />
+      <input type="button" onclick="location.href='/new'" value="New diary" />
       <input type="button" onclick="location.href='/logout'" value="Log out" />
     </div>
     <table>
@@ -34,6 +30,8 @@
         <td>{{ loop.index0 }}</td>
         <td><a href="/post/{{ post.id }}">{{ post.title }}</a></td>
         <td>{{ post.date_posted }}</td>
+        <td><a href="/edit/{{post.id}}">Edit</a></td>
+        <td><a href="/delete/{{post.id}}">Delete</a></td>
       </tr>
       {% endfor %}
     </table>
