@@ -3,8 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
 import os
+import shutil
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'this is secret'
@@ -62,11 +64,27 @@ def index():
 def new():
     if request.method == 'GET': # New diary button from home.html
         return render_template('new.html') 
-    else: # add another past entry to Post table
-        image = request.files['image']
-
+    else: # add another post entry to Post table
         new_post = Post(title=request.form['title'],
-                        content=request.form['content'])
+                        content=request.form['content'],
+                        user_id=session['logged_in'])
+
+        db.session.add(new_post)
+        db.session.commit()
+
+        image = request.files['image']
+        user = User.query.filter_by(id=new_post.user_id).first()
+        post_dir = 'static/' + user.img_path + str(new_post.id) + '/'
+
+        if not os.path.exists(post_dir):
+            os.makedirs(post_dir)
+
+        if image.filename != '':
+            image.save(post_dir + secure_filename(image.filename))
+
+        return render_template('home.html', 
+                                        user=user, 
+                                        posts=Post.query.filter_by(user_id=new_post.user_id).all())
 
 @app.route('/post/<int:id>')
 def post(id):
@@ -76,8 +94,8 @@ def post(id):
     except:
         pass
     else:
-        user_path = 'static/' + user.img_path
-        return render_template('post.html', post=post, user=user, files=[file for file in os.listdir(user_path)])
+        path = user.img_path + str(id) + '/'
+        return render_template('post.html', path=path, post=post, user=user, files=[file for file in os.listdir('static/' + path)])
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
@@ -95,7 +113,18 @@ def edit(id):
 
 @app.route('/delete/<int:id>')
 def delete(id):
-    pass
+    post = Post.query.filter_by(id=id).first()
+    user = User.query.filter_by(id=session['logged_in']).first()
+
+    shutil.rmtree('static/' + user.img_path + str(post.id))
+
+    db.session.delete(post)
+    db.session.commit()
+
+    posts = Post.query.filter_by(user_id=session['logged_in']).all()
+
+    return render_template('home.html', user=user, 
+                                        posts=posts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -107,17 +136,17 @@ def login():
         password = request.form['password']
 
         try:
-            data = User.query.filter_by(email=email).first()
+            user = User.query.filter_by(email=email).first()
         except:
             pass
         else:
-            if data is None:
+            if user is None:
                 pass
-            elif data.check_password(password):
-                session['logged_in'] = data.id #logged_in user's id
+            elif user.check_password(password):
+                session['logged_in'] = user.id #logged_in user's id
                 return render_template('home.html', 
-                                        username=data.username, 
-                                        posts=Post.query.filter_by(user_id=data.id).all())
+                                        user=user, 
+                                        posts=Post.query.filter_by(user_id=user.id).all())
             else:
                 pass
 

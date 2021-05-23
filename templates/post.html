@@ -19,7 +19,7 @@
     </article>
 
     {% for file in files %}
-    <img src="{{url_for('static', filename=user.img_path + file)}}" />
+    <img src="{{url_for('static', filename = path + file)}}" />
     {% endfor %}
   </body>
 </html>
