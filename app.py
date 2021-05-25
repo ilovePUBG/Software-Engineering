@@ -95,7 +95,7 @@ def post(id):
         pass
     else:
         path = user.img_path + str(id) + '/'
-        return render_template('post.html', path=path, post=post, user=user, files=[file for file in os.listdir('static/' + path)])
+        return render_template('post.html', path=path, post=post, files=[file for file in os.listdir('static/' + path)])
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
@@ -106,10 +106,25 @@ def edit(id):
         except:
             pass
         else:
-            user_path = 'static/' + user.img_path
-            return render_template('edit.html', post=post, user=user, files=[file for file in os.listdir(user_path)])
+            path = user.img_path + str(id) + '/'
+            return render_template('edit.html', path=path, post=post, files=[file for file in os.listdir('static/' + path)])
     else: # update post entry after edit task
-        pass
+        image = request.files['image']
+        post_to_update = Post.query.filter_by(id=id).first()
+        user = User.query.filter_by(id=session['logged_in']).first()
+
+        post_to_update.title = request.form['title']
+        post_to_update.content = request.form['content']
+        post_to_update.user_id = session['logged_in']
+        db.session.commit()
+
+        post_dir = 'static/' + user.img_path + str(id) + '/'
+        if image.filename != '':
+            image.save(post_dir + secure_filename(image.filename))
+
+        return render_template('home.html', 
+                                        user=user, 
+                                        posts=Post.query.filter_by(user_id=user.id).all())
 
 @app.route('/delete/<int:id>')
 def delete(id):

@@ -5,6 +5,7 @@ const loadFile = function (event) {
   // console.log(event.target.files);
   image.setAttribute("width", "50px");
   image.setAttribute("height", "50px");
+  image.setAttribute("name", "image");
   const ctnr = document.querySelector(".image-display");
   ctnr.appendChild(image);
 };
