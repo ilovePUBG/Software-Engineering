@@ -1,39 +1,36 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>MAIN</title>
-    <meta charset="utf-8" />
-    <link
-      rel="stylesheet"
-      href="{{url_for('static', filename='css/home.css')}}"
-    />
-    <link
-      href="https://fonts.googleapis.com/earlyaccess/notosanskr.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <h2>THIS IS MAIN PAGE</h2>
-    <h3>Welcome! {{ user.username }}</h3>
-    <div>
-      <input type="button" onclick="location.href='/new'" value="New diary" />
-      <input type="button" onclick="location.href='/logout'" value="Log out" />
-    </div>
-    <table>
+{% extends 'base.html' %} {% block content %}
+<h2>THIS IS HOME PAGE</h2>
+<h3>Welcome! {{ user.username }}</h3>
+<br>
+<br>
+<br>
+<div class="container h-100">
+  <table class="table table-hover">
+    <thead>
       <tr>
-        <th>INDEX</th>
-        <th>TITLE</th>
-        <th>DATE POSTED</th>
+        <th scope="col">Index</th>
+        <th scope="col">Title</th>
+        <th scope="col">Date posted</th>
+        <th scope="col">Jobs</th>
       </tr>
+    </thead>
+    <tbody>
       {% for post in posts %}
       <tr>
-        <td>{{ loop.index0 }}</td>
-        <td><a href="/post/{{ post.id }}">{{ post.title }}</a></td>
+        <th scope="row">{{ loop.index0 }}</th>
+        <td>{{ post.title }}</td>
         <td>{{ post.date_posted }}</td>
-        <td><a href="/edit/{{post.id}}">Edit</a></td>
-        <td><a href="/delete/{{post.id}}">Delete</a></td>
+        <td>
+          <button type="button" class="btn btn-outline-primary" onclick="location.href='/post/{{ post.id }}'">Check</button>
+          <button type="button" class="btn btn-outline-success" onclick="location.href='/edit/{{post.id}}'">Edit</button>
+          <button type="button" class="btn btn-outline-danger" onclick="location.href='/delete/{{post.id}}'">Delete</button>
+        </td>
       </tr>
       {% endfor %}
-    </table>
-  </body>
-</html>
+    </tbody>
+  </table>
+  <div>
+    <input type="button" onclick="location.href='/new'" value="New diary" />
+  </div>
+</div>
+{% endblock %}

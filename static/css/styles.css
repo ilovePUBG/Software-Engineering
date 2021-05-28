@@ -10,3 +10,9 @@ a {
 a:visited {
   color: inherit;
 }
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

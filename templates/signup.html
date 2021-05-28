@@ -1,46 +1,53 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>SIGNUP</title>
-    <meta charset="utf-8" />
-    <link
-      rel="stylesheet"
-      href="{{url_for('static', filename='css/signup.css')}}"
-    />
-    <link
-      href="https://fonts.googleapis.com/earlyaccess/notosanskr.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="signup-form">
+{% extends 'base.html' %} {% block content %}
+
+  <div class="container h-100">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-10 col-md-8 col-lg-6">
+
+      {% if doShow %}
+      <div class="alert alert-danger" role="alert">
+       You've already signed up!
+      </div>
+      {% endif %}
+
       <form action="/signup" method="POST">
-        <input
-          type="text"
-          name="username"
-          class="text-field"
-          placeholder="Username"
-        />
-        <input
-          type="text"
-          name="email"
-          class="text-field"
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          name="password"
-          class="text-field"
-          placeholder="Password"
-        />
-        <!--<input
-          type="password"
-          name="password_retype"
-          class="text-field"
-          placeholder="Password Retype"
-        />-->
-        <input type="submit" value="Sign up" class="submit-btn" />
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label"
+            >User name</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+            name="username"
+            required
+          />
+        </div>
+         <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Email address</label>
+          <input
+            type="text"
+            class="form-control"
+            id="exampleInputPassword1"
+            name="email"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="exampleInputPassword1"
+            name="password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Sign up</button>
       </form>
     </div>
-  </body>
-</html>
+  </div>
+</div>
+</div>
+{% endblock %}

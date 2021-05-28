@@ -1,25 +1,7 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>MAIN</title>
-    <meta charset="utf-8" />
-    <link
-      rel="stylesheet"
-      href="{{url_for('static', filename='css/home.css')}}"
-    />
-    <link
-      href="https://fonts.googleapis.com/earlyaccess/notosanskr.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <h2>THIS IS POST PAGE</h2>
-    <article>
-      {{ post.title }} {{ post.content }} {{ post.date_posted }}
-    </article>
+{% extends 'base.html' %} {% block content %}
+<h2>THIS IS POST PAGE</h2>
+<article>{{ post.title }} {{ post.content }} {{ post.date_posted }}</article>
 
-    {% for file in files %}
-    <img src="{{url_for('static', filename = path + file)}}" />
-    {% endfor %}
-  </body>
-</html>
+{% for file in files %}
+<img src="{{url_for('static', filename = path + file)}}" />
+{% endfor %} {% endblock %}

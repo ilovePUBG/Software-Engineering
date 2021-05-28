@@ -56,9 +56,16 @@ class Post(db.Model):
         return f"<Post('{self.id}', '{self.title}')>"
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/home')
+def home():
+    user = User.query.filter_by(id=session['logged_in']).first()
+    posts = Post.query.filter_by(user_id=session['logged_in']).all()
+
+    return render_template('home.html', user=user, posts=posts)
 
 @app.route('/new', methods=['GET', 'POST'])
 def new():
@@ -82,9 +89,7 @@ def new():
         if image.filename != '':
             image.save(post_dir + secure_filename(image.filename))
 
-        return render_template('home.html', 
-                                        user=user, 
-                                        posts=Post.query.filter_by(user_id=new_post.user_id).all())
+        return redirect(url_for('home'))
 
 @app.route('/post/<int:id>')
 def post(id):
@@ -95,7 +100,9 @@ def post(id):
         pass
     else:
         path = user.img_path + str(id) + '/'
-        return render_template('post.html', path=path, post=post, files=[file for file in os.listdir('static/' + path)])
+        return render_template('post.html', path=path, 
+                                            post=post, 
+                                            files=[file for file in os.listdir('static/' + path)])
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
@@ -107,7 +114,9 @@ def edit(id):
             pass
         else:
             path = user.img_path + str(id) + '/'
-            return render_template('edit.html', path=path, post=post, files=[file for file in os.listdir('static/' + path)])
+            return render_template('edit.html', path=path, 
+                                                post=post, 
+                                                files=[file for file in os.listdir('static/' + path)])
     else: # update post entry after edit task
         image = request.files['image']
         post_to_update = Post.query.filter_by(id=id).first()
@@ -122,9 +131,7 @@ def edit(id):
         if image.filename != '':
             image.save(post_dir + secure_filename(image.filename))
 
-        return render_template('home.html', 
-                                        user=user, 
-                                        posts=Post.query.filter_by(user_id=user.id).all())
+        return redirect(url_for('home'))
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -138,8 +145,7 @@ def delete(id):
 
     posts = Post.query.filter_by(user_id=session['logged_in']).all()
 
-    return render_template('home.html', user=user, 
-                                        posts=posts)
+    return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -159,17 +165,18 @@ def login():
                 pass
             elif user.check_password(password):
                 session['logged_in'] = user.id #logged_in user's id
-                return render_template('home.html', 
-                                        user=user, 
-                                        posts=Post.query.filter_by(user_id=user.id).all())
+                
+                return redirect(url_for('home'))
             else:
                 pass
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    doShow = False
+
     if request.method == 'GET':
-        return render_template('signup.html')
+        return render_template('signup.html', doShow=doShow)
 
     else:
         new_user = User(username=request.form['username'],
@@ -180,12 +187,13 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
         except:
-            return "You are already our member~"
+            doShow = True
+            return render_template('signup.html', doShow=doShow)
         else:
             if not os.path.exists(new_user.img_path):
                 os.makedirs('static/' + new_user.img_path)
 
-            return render_template('login.html')
+            return redirect(url_for('login'))
 
 @app.route('/logout')
 def logout():
