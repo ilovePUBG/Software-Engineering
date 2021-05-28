@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 <h2>THIS IS EDIT PAGE</h2>
 
-<form action="/edit/{{post.id}}" method="POST" enctype="multipart/form-data">
+<!--<form action="/edit/{{post.id}}" method="POST" enctype="multipart/form-data">
   <textarea
     name="title"
     placeholder="write title"
@@ -22,14 +22,31 @@
     name="image"
     onchange="loadFile(event)"
   />
-  <!--where selected images displayed-->
+
   <div class="image-display">
     {% for file in files %}
     <img src="{{url_for('static', filename=path + file)}}" />
     {% endfor %}
   </div>
   <input type="submit" value="Save diary" />
-</form>
+</form>-->
+<div class="container">
+  <form action="/edit/{{post.id}}" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="exampleFormControlInput1" class="form-label">Title</label>
+      <input name="title" value="{{post.title}}" type="text" class="form-control" id="exampleFormControlInput1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">Diary</label>
+      <textarea name="content" value="{{post.content}}" class="form-control" id="exampleFormControlTextarea1" rows="25"></textarea>
+    </div>
+    <div class="mb-3 col-3">
+      <label for="formFileMultiple" class="form-label">Photos</label>
+      <input accept="image/*" name="image" onchange="loadFile(event)" class="form-control" type="file" id="formFileMultiple" multiple>
+    </div>
+  </form>
+</div>
+
 
 <script
   type="text/javascript"
