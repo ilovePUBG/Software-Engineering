@@ -1,22 +1,40 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+
+{% block style %}
+  div.input {
+    display: flex;
+    justify-content: flex-end;
+  }
+{% endblock %}
+
+{% block content %}
 <h2>THIS IS NEW PAGE</h2>
 
-<form action="/new" method="POST" enctype="multipart/form-data">
-  <!--<input type="text" name="title" placeholder="write title" required />
-      <input type="text" name="content" placeholder="write your story" />-->
-  <textarea name="title" placeholder="write title" required> </textarea>
-  <textarea name="content" placeholder="write your story"> </textarea>
-  <input
-    type="file"
-    accept="image/*"
-    id="file"
-    name="image"
-    onchange="loadFile(event)"
-  />
-  <div class="image-display"></div>
-  <!--where selected images displayed-->
-  <input type="submit" value="Save diary" />
-</form>
+<div class="container">
+  <form action="/new" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="exampleFormControlInput1" class="form-label">Title</label>
+      <input name="title" type="text" class="form-control" id="exampleFormControlInput1" placeholder="write title" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">Diary</label>
+      <textarea name="content" class="form-control" id="exampleFormControlTextarea1" rows="20" placeholder="write your story"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="formFileMultiple" class="form-label">Photos</label>
+      <input accept="image/*" name="image" onchange="loadFile(event)" class="form-control" type="file" id="formFileMultiple" multiple>
+    </div>
+
+    <div class="input">
+      <input class="btn btn-primary btn-lg" type="submit" value="Save diary">
+    </div>
+  </form>
+
+  <div class="image-display" style="padding-bottom: 30px">
+  </div>
+</div>
 
 <script
   type="text/javascript"

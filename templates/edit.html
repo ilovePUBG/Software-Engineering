@@ -1,52 +1,42 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+{% block style %}
+  div.input {
+    display: flex;
+    justify-content: flex-end;
+  }
+{% endblock %}
+
+{% block content %}
 <h2>THIS IS EDIT PAGE</h2>
 
-<!--<form action="/edit/{{post.id}}" method="POST" enctype="multipart/form-data">
-  <textarea
-    name="title"
-    placeholder="write title"
-    value="{{post.title}}"
-    required
-  >
-  </textarea>
-  <textarea
-    name="content"
-    placeholder="write your story"
-    value="{{post.content}}"
-  >
-  </textarea>
-  <input
-    type="file"
-    accept="image/*"
-    id="file"
-    name="image"
-    onchange="loadFile(event)"
-  />
-
-  <div class="image-display">
-    {% for file in files %}
-    <img src="{{url_for('static', filename=path + file)}}" />
-    {% endfor %}
-  </div>
-  <input type="submit" value="Save diary" />
-</form>-->
 <div class="container">
   <form action="/edit/{{post.id}}" method="POST" enctype="multipart/form-data">
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Title</label>
       <input name="title" value="{{post.title}}" type="text" class="form-control" id="exampleFormControlInput1">
     </div>
+
     <div class="mb-3">
       <label for="exampleFormControlTextarea1" class="form-label">Diary</label>
-      <textarea name="content" value="{{post.content}}" class="form-control" id="exampleFormControlTextarea1" rows="25"></textarea>
+      <textarea name="content" class="form-control" id="exampleFormControlTextarea1" rows="20">{{post.content}}</textarea>
     </div>
-    <div class="mb-3 col-3">
+
+    <div class="mb-3">
       <label for="formFileMultiple" class="form-label">Photos</label>
       <input accept="image/*" name="image" onchange="loadFile(event)" class="form-control" type="file" id="formFileMultiple" multiple>
     </div>
-  </form>
-</div>
 
+    <div class="input">
+      <input class="btn btn-primary btn-lg" type="submit" value="Save diary">
+    </div>
+  </form>
+
+  <div class="image-display" style="padding-bottom: 30px">
+    {% for file in files %}
+      <img src="{{url_for('static', filename=path + file)}}" class="rounded" width="150px" height="150px"/>
+    {% endfor %}
+  </div>
+</div>
 
 <script
   type="text/javascript"

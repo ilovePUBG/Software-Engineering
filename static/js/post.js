@@ -1,11 +1,20 @@
 const loadFile = function (event) {
-  const image = document.createElement("img");
-  image.setAttribute("id", "output");
-  image.setAttribute("src", URL.createObjectURL(event.target.files[0]));
-  // console.log(event.target.files);
-  image.setAttribute("width", "50px");
-  image.setAttribute("height", "50px");
-  image.setAttribute("name", "image");
+
+  const images = event.target.files;
   const ctnr = document.querySelector(".image-display");
-  ctnr.appendChild(image);
+  let img;
+  // console.log(images.length);
+
+  for (let i = 0; i < images.length; i++) {
+    img = document.createElement("img");
+
+    img.setAttribute("id", "output");
+    img.setAttribute("class", "rounded");
+    img.setAttribute("src", URL.createObjectURL(images[i]));
+    img.setAttribute("width", "150px");
+    img.setAttribute("height", "150px");
+    img.setAttribute("name", "image");
+
+    ctnr.appendChild(img);
+  }
 };

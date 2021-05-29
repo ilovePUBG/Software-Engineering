@@ -1,7 +1,26 @@
-{% extends 'base.html' %} {% block content %}
-<h2>THIS IS POST PAGE</h2>
-<article>{{ post.title }} {{ post.content }} {{ post.date_posted }}</article>
+{% extends 'base.html' %} 
 
-{% for file in files %}
-<img src="{{url_for('static', filename = path + file)}}" />
-{% endfor %} {% endblock %}
+{% block content %}
+<h2>THIS IS POST PAGE</h2>
+
+<div class="container">
+    <article>
+        <h1>{{ post.title }}</h1>
+        <h6>{{ post.date_posted }}</h6>
+        <br>
+        <div class="mb-3">
+            <textarea name="content" class="form-control" id="exampleFormControlTextarea1" rows="20" readonly>{{post.content}}</textarea>
+        </div>
+    </article>
+    <br>
+
+    <label for="formFileMultiple" class="form-label">Photos</label>
+    
+    <div class="image-display" style="padding-bottom: 30px">
+    {% for file in files %}
+      <img src="{{url_for('static', filename=path + file)}}" class="rounded" width="150px" height="150px"/>
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
