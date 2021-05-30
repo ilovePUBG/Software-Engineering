@@ -79,15 +79,15 @@ def new():
         db.session.add(new_post)
         db.session.commit()
 
-        image = request.files['image']
         user = User.query.filter_by(id=new_post.user_id).first()
         post_dir = 'static/' + user.img_path + str(new_post.id) + '/'
 
         if not os.path.exists(post_dir):
             os.makedirs(post_dir)
 
-        if image.filename != '':
-            image.save(post_dir + secure_filename(image.filename))
+        for img in request.files.getlist('image'):
+            if img.filename != '':
+                img.save(post_dir + secure_filename(img.filename))
 
         return redirect(url_for('home'))
 
@@ -118,7 +118,7 @@ def edit(id):
                                                 post=post, 
                                                 files=[file for file in os.listdir('static/' + path)])
     else: # update post entry after edit task
-        image = request.files['image']
+
         post_to_update = Post.query.filter_by(id=id).first()
         user = User.query.filter_by(id=session['logged_in']).first()
 
@@ -128,8 +128,10 @@ def edit(id):
         db.session.commit()
 
         post_dir = 'static/' + user.img_path + str(id) + '/'
-        if image.filename != '':
-            image.save(post_dir + secure_filename(image.filename))
+
+        for img in request.files.getlist('image'):
+            if img.filename != '':
+                img.save(post_dir + secure_filename(img.filename))
 
         return redirect(url_for('home'))
 

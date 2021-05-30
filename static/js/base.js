@@ -1,9 +1,11 @@
 const loadFile = function (event) {
 
   const images = event.target.files;
-  const ctnr = document.querySelector(".image-display");
+  const display = document.querySelector(".image-display");
   let img;
   // console.log(images.length);
+
+  display.innerHTML = "";
 
   for (let i = 0; i < images.length; i++) {
     img = document.createElement("img");
@@ -15,6 +17,6 @@ const loadFile = function (event) {
     img.setAttribute("height", "150px");
     img.setAttribute("name", "image");
 
-    ctnr.appendChild(img);
+    display.appendChild(img);
   }
 };
