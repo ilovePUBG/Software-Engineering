@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
 from sqlalchemy.orm import backref, defaultload
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -66,6 +67,8 @@ def home():
     if session['logged_in'] != None:
         user = User.query.filter_by(id=session['logged_in']).first()
         posts = Post.query.filter_by(user_id=session['logged_in']).all()
+
+        posts = sorted(posts, key=lambda i: i.date_posted, reverse=True)
 
         return render_template('home.html', user=user, posts=posts)
 
