@@ -1,8 +1,23 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
 
+{% block content %}
 <div class="container h-100">
   <div class="row h-100 justify-content-center align-items-center">
     <div class="col-10 col-md-8 col-lg-6">
+      <h1>Log in</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for  category, message in messages%}
+              <div class="{{category}}" role="alert">
+                <strong>Oops!   </strong> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+      {% endwith %}
+
+      <br>
       <form action="/login" method="POST">
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label"
@@ -14,6 +29,7 @@
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             name="email"
+            required
           />
         </div>
         <div class="mb-3">
@@ -23,6 +39,7 @@
             class="form-control"
             id="exampleInputPassword1"
             name="password"
+            required
           />
         </div>
         <button type="submit" class="btn btn-primary">Log in</button>
@@ -30,5 +47,4 @@
     </div>
   </div>
 </div>
-
 {% endblock %}

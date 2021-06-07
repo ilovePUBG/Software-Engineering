@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from typing import Type
+from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from sqlalchemy.orm import backref
@@ -58,7 +59,7 @@ class Post(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect('/login')
 
 @app.route('/home')
 def home():
@@ -93,7 +94,7 @@ def new():
 
 @app.route('/post/<int:id>')
 def post(id):
-    try:
+    try: 
         post = Post.query.filter_by(id=id).first()
         user = User.query.filter_by(id=post.user_id).first()
     except:
@@ -117,8 +118,8 @@ def edit(id):
             return render_template('edit.html', path=path, 
                                                 post=post, 
                                                 files=[file for file in os.listdir('static/' + path)])
-    else: # update post entry after edit task
 
+    else: # update post entry after edit task
         post_to_update = Post.query.filter_by(id=id).first()
         user = User.query.filter_by(id=session['logged_in']).first()
 
@@ -152,7 +153,10 @@ def delete(id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        if session['logged_in'] != None:
+            return redirect(request.referrer)
+        else :
+            return render_template('login.html')
 
     else:
         email = request.form['email']
@@ -161,24 +165,25 @@ def login():
         try:
             user = User.query.filter_by(email=email).first()
         except:
-            pass
+                pass
         else:
             if user is None:
-                pass
+                flash("Invalid email or password", category="alert alert-danger alert-dismissible fade show")
+                return redirect('/login')
             elif user.check_password(password):
                 session['logged_in'] = user.id #logged_in user's id
-                
-                return redirect(url_for('home'))
+                return redirect('/home')
             else:
                 pass
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    doShow = False
-
     if request.method == 'GET':
-        return render_template('signup.html', doShow=doShow)
+        if session['logged_in'] != None:
+            return redirect(request.referrer)
+        else :
+            return render_template('signup.html')
 
     else:
         new_user = User(username=request.form['username'],
@@ -189,18 +194,18 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
         except:
-            doShow = True
-            return render_template('signup.html', doShow=doShow)
+            flash("Username or email is duplicated. Try another one ~", category="alert alert-warning alert-dismissible fade show")
+            return redirect('/signup')
         else:
             if not os.path.exists(new_user.img_path):
                 os.makedirs('static/' + new_user.img_path)
 
-            return redirect(url_for('login'))
+            return redirect('/login')
 
 @app.route('/logout')
 def logout():
     session['logged_in'] = None
-    return redirect(url_for('index'))
+    return redirect('/')
 
 
 if __name__ == '__main__':

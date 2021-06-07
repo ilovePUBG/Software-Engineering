@@ -1,15 +1,23 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
 
-  <div class="container h-100">
+{% block content %}
+<div class="container h-100">
   <div class="row h-100 justify-content-center align-items-center">
     <div class="col-10 col-md-8 col-lg-6">
+      <h1>Sign up</h1>
 
-      {% if doShow %}
-      <div class="alert alert-danger" role="alert">
-       You've already signed up!
-      </div>
-      {% endif %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for  category, message in messages%}
+              <div class="{{category}}" role="alert">
+                <strong>Hmm...   </strong> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+      {% endwith %}
 
+      <br>
       <form action="/signup" method="POST">
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label"
@@ -48,6 +56,5 @@
       </form>
     </div>
   </div>
-</div>
 </div>
 {% endblock %}
