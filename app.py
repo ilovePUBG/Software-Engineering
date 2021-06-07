@@ -63,10 +63,14 @@ def index():
 
 @app.route('/home')
 def home():
-    user = User.query.filter_by(id=session['logged_in']).first()
-    posts = Post.query.filter_by(user_id=session['logged_in']).all()
+    if session['logged_in'] != None:
+        user = User.query.filter_by(id=session['logged_in']).first()
+        posts = Post.query.filter_by(user_id=session['logged_in']).all()
 
-    return render_template('home.html', user=user, posts=posts)
+        return render_template('home.html', user=user, posts=posts)
+
+    else:
+        return redirect(request.referrer)
 
 @app.route('/new', methods=['GET', 'POST'])
 def new():
@@ -203,8 +207,11 @@ def signup():
 
 @app.route('/logout')
 def logout():
-    session['logged_in'] = None
-    return redirect('/')
+    if session['logged_in'] != None:
+        session['logged_in'] = None
+        return redirect('/')
+    else:
+        return redirect(request.referrer)
 
 
 if __name__ == '__main__':
