@@ -1,8 +1,7 @@
-from typing import Type
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from sqlalchemy.orm import backref
+from sqlalchemy.orm import backref, defaultload
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
@@ -50,7 +49,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), unique=True, nullable=False)
     content = db.Column(db.Text)
-    date_posted = db.Column(db.DateTime, default=datetime.utcnow())
+    date_posted = db.Column(db.DateTime, default=datetime.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
@@ -59,6 +58,7 @@ class Post(db.Model):
 
 @app.route('/')
 def index():
+    session['logged_in'] = None
     return redirect('/login')
 
 @app.route('/home')
@@ -75,6 +75,7 @@ def new():
     else: # add another post entry to Post table
         new_post = Post(title=request.form['title'],
                         content=request.form['content'],
+                        date_posted=datetime.now(),
                         user_id=session['logged_in'])
 
         db.session.add(new_post)
@@ -145,8 +146,6 @@ def delete(id):
 
     db.session.delete(post)
     db.session.commit()
-
-    posts = Post.query.filter_by(user_id=session['logged_in']).all()
 
     return redirect(url_for('home'))
 
